@@ -25,6 +25,7 @@
 <%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
 page import="com.liferay.portal.kernel.util.StringPool" %><%@
+page import="com.liferay.portal.kernel.util.StringUtil" %><%@
 page import="com.liferay.randombibleverse.model.Bible" %><%@
 page import="com.liferay.randombibleverse.model.Verse" %><%@
 page import="com.liferay.randombibleverse.util.RBVUtil" %>
@@ -32,14 +33,10 @@ page import="com.liferay.randombibleverse.util.RBVUtil" %>
 <%@ page import="java.util.Iterator" %><%@
 page import="java.util.Map" %>
 
-<%@ page import="javax.portlet.PortletPreferences" %>
-
 <portlet:defineObjects />
 
 <liferay-theme:defineObjects />
 
 <%
-PortletPreferences preferences = renderRequest.getPreferences();
-
-String language = preferences.getValue("language", StringPool.BLANK);
+String language = portletPreferences.getValue("language", StringPool.BLANK);
 %>

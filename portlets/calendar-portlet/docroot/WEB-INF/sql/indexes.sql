@@ -7,8 +7,8 @@ create unique index IX_3AE311A on Calendar (uuid_, groupId);
 
 create index IX_D300DFCE on CalendarBooking (calendarId);
 create unique index IX_113A264E on CalendarBooking (calendarId, parentCalendarBookingId);
+create index IX_470170B4 on CalendarBooking (calendarId, status);
 create index IX_B198FFC on CalendarBooking (calendarResourceId);
-create index IX_97B612E2 on CalendarBooking (calendarResourceId, status);
 create index IX_57EBF55B on CalendarBooking (parentCalendarBookingId);
 create index IX_F7B8A941 on CalendarBooking (parentCalendarBookingId, status);
 create index IX_22DFDB49 on CalendarBooking (resourceBlockId);
@@ -16,6 +16,7 @@ create index IX_F6E8EE73 on CalendarBooking (uuid_);
 create index IX_A21D9FD5 on CalendarBooking (uuid_, companyId);
 create unique index IX_F4C61797 on CalendarBooking (uuid_, groupId);
 
+create index IX_A412E5B6 on CalendarNotificationTemplate (calendarId);
 create index IX_7727A482 on CalendarNotificationTemplate (calendarId, notificationType, notificationTemplateType);
 create index IX_A2D4D78B on CalendarNotificationTemplate (uuid_);
 create index IX_4D7D97BD on CalendarNotificationTemplate (uuid_, companyId);

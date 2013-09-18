@@ -65,18 +65,18 @@
 					property="userName"
 				/>
 
-				<liferay-ui:search-container-column-text
+				<liferay-ui:search-container-column-date
 					cssClass="kb-column-no-wrap"
 					name="create-date"
 					orderable="<%= true %>"
-					value='<%= dateFormatDate.format(kbTemplate.getCreateDate()) + "<br />" + dateFormatTime.format(kbTemplate.getCreateDate()) %>'
+					value="<%= kbTemplate.getCreateDate() %>"
 				/>
 
-				<liferay-ui:search-container-column-text
+				<liferay-ui:search-container-column-date
 					cssClass="kb-column-no-wrap"
 					name="modified-date"
 					orderable="<%= true %>"
-					value='<%= dateFormatDate.format(kbTemplate.getModifiedDate()) + "<br />" + dateFormatTime.format(kbTemplate.getModifiedDate()) %>'
+					value="<%= kbTemplate.getModifiedDate() %>"
 				/>
 
 				<liferay-ui:search-container-column-jsp
@@ -112,7 +112,7 @@
 			</c:if>
 
 			<c:if test="<%= (total > 0) && AdminPermission.contains(permissionChecker, scopeGroupId, ActionKeys.DELETE_KB_TEMPLATES) %>">
-				<aui:button-row>
+				<aui:button-row cssClass="kb-bulk-action-button-holder">
 					<aui:button onClick='<%= renderResponse.getNamespace() + "deleteKBTemplates();" %>' value="delete" />
 				</aui:button-row>
 			</c:if>

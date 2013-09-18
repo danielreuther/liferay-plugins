@@ -64,9 +64,7 @@ public class DDLFormPortletDataHandler extends BasePortletDataHandler {
 			PortletPreferences portletPreferences)
 		throws Exception {
 
-		portletDataContext.addPermissions(
-			"com.liferay.portlet.dynamicdatalist",
-			portletDataContext.getScopeGroupId());
+		portletDataContext.addPortletPermissions(RESOURCE_NAME);
 
 		long recordSetId = GetterUtil.getLong(
 			portletPreferences.getValue("recordSetId", null));
@@ -92,10 +90,7 @@ public class DDLFormPortletDataHandler extends BasePortletDataHandler {
 			PortletPreferences portletPreferences, String data)
 		throws Exception {
 
-		portletDataContext.importPermissions(
-			"com.liferay.portlet.dynamicdatalist",
-			portletDataContext.getSourceGroupId(),
-			portletDataContext.getScopeGroupId());
+		portletDataContext.importPortletPermissions(RESOURCE_NAME);
 
 		Element recordSetsElement =
 			portletDataContext.getImportDataGroupElement(DDLRecordSet.class);
@@ -134,5 +129,8 @@ public class DDLFormPortletDataHandler extends BasePortletDataHandler {
 
 		return portletPreferences;
 	}
+
+	protected static final String RESOURCE_NAME =
+		"com.liferay.portlet.dynamicdatalist";
 
 }

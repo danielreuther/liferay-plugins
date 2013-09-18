@@ -19,7 +19,6 @@ package com.liferay.so.sites.portlet;
 
 import com.liferay.portal.DuplicateGroupException;
 import com.liferay.portal.GroupNameException;
-import com.liferay.portal.kernel.dao.search.DAOParamUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -185,9 +184,12 @@ public class SitesPortlet extends MVCPortlet {
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
 		boolean directory = ParamUtil.getBoolean(resourceRequest, "directory");
 		int end = ParamUtil.getInteger(resourceRequest, "end", 10);
-		String keywords = DAOParamUtil.getLike(resourceRequest, "keywords");
+		String keywords = ParamUtil.getString(resourceRequest, "keywords");
 		int maxResultSize = ParamUtil.getInteger(
 			resourceRequest, "maxResultSize", 10);
 		String searchTab = ParamUtil.getString(resourceRequest, "searchTab");
@@ -204,9 +206,6 @@ public class SitesPortlet extends MVCPortlet {
 		optionsJSONObject.put("start", start);
 
 		jsonObject.put("options", optionsJSONObject);
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
 
 		List<Group> groups = null;
 		int groupsCount = 0;

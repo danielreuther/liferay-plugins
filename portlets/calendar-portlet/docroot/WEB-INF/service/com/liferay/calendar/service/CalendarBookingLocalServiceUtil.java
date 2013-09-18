@@ -389,6 +389,12 @@ public class CalendarBookingLocalServiceUtil {
 		getService().deleteCalendarBookings(calendarId);
 	}
 
+	public static java.lang.String exportCalendarBooking(
+		long calendarBookingId, java.lang.String type)
+		throws java.lang.Exception {
+		return getService().exportCalendarBooking(calendarBookingId, type);
+	}
+
 	public static com.liferay.calendar.model.CalendarBooking fetchCalendarBooking(
 		java.lang.String uuid, long groupId)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -407,6 +413,12 @@ public class CalendarBookingLocalServiceUtil {
 		long calendarId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService().getCalendarBookings(calendarId);
+	}
+
+	public static java.util.List<com.liferay.calendar.model.CalendarBooking> getCalendarBookings(
+		long calendarId, int[] statuses)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getCalendarBookings(calendarId, statuses);
 	}
 
 	public static java.util.List<com.liferay.calendar.model.CalendarBooking> getCalendarBookings(
@@ -443,17 +455,17 @@ public class CalendarBookingLocalServiceUtil {
 	}
 
 	public static void moveCalendarBookingToTrash(long userId,
-		long calendarBookingId)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		getService().moveCalendarBookingToTrash(userId, calendarBookingId);
-	}
-
-	public static void moveCalendarBookingToTrash(long userId,
 		com.liferay.calendar.model.CalendarBooking calendarBooking)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		getService().moveCalendarBookingToTrash(userId, calendarBooking);
+	}
+
+	public static void moveCalendarBookingToTrash(long userId,
+		long calendarBookingId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService().moveCalendarBookingToTrash(userId, calendarBookingId);
 	}
 
 	public static void restoreCalendarBookingFromTrash(long userId,

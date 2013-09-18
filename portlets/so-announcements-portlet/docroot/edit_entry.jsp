@@ -39,7 +39,7 @@ if (entry == null) {
 
 <div id="<portlet:namespace />errorMessage"></div>
 
-<aui:form method="post" name='<%= renderResponse.getNamespace() + "fm" %>' onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveEntry();" %>' useNamespace="false">
+<aui:form method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveEntry();" %>'>
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="entryId" type="hidden" value="<%= entryId %>" />
 	<aui:input name="alert" type="hidden" value="<%= portletName.equals(PortletKeys.ALERTS) %>" />
@@ -130,7 +130,7 @@ if (entry == null) {
 	</aui:button-row>
 </aui:form>
 
-<div class="entry aui-helper-hidden" id="<portlet:namespace />preview">
+<div class="entry hide" id="<portlet:namespace />preview">
 	<div class="user-portrait">
 		<span class="avatar">
 
@@ -162,12 +162,26 @@ if (entry == null) {
 				<div class="entry-content" id="<portlet:namespace />entryContent"></div>
 			</div>
 		</div>
+
+		<div class="entry-footer" id="<portlet:namespace />entryFooter">
+			<div class="entry-footer-toolbar">
+				<div class="edit-actions">
+					<span class="toggle action hide">
+						<a class="toggle-entry" data-entryId="preview" href="javascript:;">
+							<i class="icon-expand-alt"></i>
+
+							<span><liferay-ui:message key="view-more" /></span>
+						</a>
+					</span>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 
 <aui:script>
-	function initEditor() {
-		var ckEditor = CKEDITOR.instances["editor"];
+	function <portlet:namespace />initEditor() {
+		var ckEditor = CKEDITOR.instances["<portlet:namespace />editor"];
 
 		ckEditor.resize("100%", "200");
 
@@ -175,7 +189,7 @@ if (entry == null) {
 	}
 
 	function <portlet:namespace />closeEntry() {
-		Liferay.Util.getWindow('<portlet:namespace />Dialog').close();
+		Liferay.Util.getWindow('<portlet:namespace />Dialog').hide();
 	}
 
 	function <portlet:namespace />previewEntry() {
@@ -183,11 +197,11 @@ if (entry == null) {
 
 		var preview = A.one('#<portlet:namespace />preview');
 
-		if (preview.hasClass('aui-helper-hidden')) {
-			preview.removeClass('aui-helper-hidden');
+		if (preview.hasClass('hide')) {
+			preview.removeClass('hide');
 		}
 
-		var priority = A.one('#priority')._node.selectedIndex;
+		var priority = A.one('#<portlet:namespace />priority')._node.selectedIndex;
 
 		if (priority == 1) {
 			preview.addClass('important-entry');
@@ -197,25 +211,46 @@ if (entry == null) {
 		}
 
 		if (<%= entry != null %>) {
-			var scope = A.one('#scope').get('value');;
+			var scope = A.one('#<portlet:namespace />scope').get('value');;
 		}
 		else {
-			var optValue = A.one('select[name="distributionScope"]').get('value');
+			var optValue = A.one('select[name="<portlet:namespace />distributionScope"]').get('value');
 			var scope = A.one('option[value=' + optValue + ']').get('text');
 		}
 
 		A.one('#<portlet:namespace />scope').html(scope);
 
-		var url = A.one('#url').get('value');
+		var url = A.one('#<portlet:namespace />url').get('value');
 
 		if (url.length != 0) {
-			var title = '<a href="' + url + '">' + A.one('#title').get('value') + '</a>';
+			var title = '<a href="' + url + '">' + A.one('#<portlet:namespace />title').get('value') + '</a>';
 		}
 		else {
-			var title = A.one('#title').get('value');
+			var title = A.one('#<portlet:namespace />title').get('value');
 		}
 
 		A.one('#<portlet:namespace />title').html(title);
+
+		var content = window.<portlet:namespace />editor.getHTML();
+
+		var previewContent = A.one('#<portlet:namespace />entryContent');
+
+		previewContent.html(content);
+
+		var previewFooter = A.one('#<portlet:namespace />entryFooter');
+
+		if (previewContent.height() > 75) {
+			var toggle = preview.one('.toggle');
+
+			toggle.removeClass('hide');
+
+			preview.addClass('announcement-collapsed')
+		}
+		else {
+			var contentContainer = preview.one('.entry-content-container');
+
+			contentContainer.setStyle('height', 'auto');
+		}
 	}
 
 	function <portlet:namespace />saveEntry() {
@@ -223,9 +258,7 @@ if (entry == null) {
 
 		var form = document.<portlet:namespace />fm;
 
-		form.<%= Constants.CMD %>.value = "<%= (entry == null) ? Constants.ADD : Constants.UPDATE %>";
-
-		form.content.value = window.editor.getHTML();
+		form.<portlet:namespace />content.value = window.<portlet:namespace />editor.getHTML();
 		form.target = '';
 
 		var uri = '<liferay-portlet:actionURL name="saveEntry"><portlet:param name="redirect" value="<%= currentURL %>" /></liferay-portlet:actionURL>';
@@ -241,19 +274,15 @@ if (entry == null) {
 							var message = A.one('#<portlet:namespace />errorMessage');
 
 							if (message) {
-								message.html('<span class="portlet-msg-error">' + responseData.message + '</span>');
+								message.html('<span class="alert alert-error">' + responseData.message + '</span>');
 							}
 						}
 						else {
 							if (<%= redirectMvcPath.equals("/manage_entries.jsp") %>) {
-								window.location.href = '<%= HtmlUtil.escape(redirect) %>';
+								window.location.href = responseData.redirect;
 							}
 							else {
-								Liferay.Util.getWindow('<portlet:namespace />Dialog').close();
-
-								var topWindow = Liferay.Util.getTop();
-
-								topWindow.document.location.reload();
+								Liferay.Util.getWindow('<portlet:namespace />Dialog').hide();
 							}
 						}
 					}
@@ -265,4 +294,16 @@ if (entry == null) {
 			}
 		);
 	}
+</aui:script>
+
+<aui:script use="aui-base">
+	var announcementEntries = A.one('#main-content');
+
+	announcementEntries.delegate(
+		'click',
+		function(event) {
+			Liferay.Announcements.toggleEntry(event);
+		},
+		'.toggle-entry'
+	);
 </aui:script>

@@ -8,7 +8,7 @@
 		margin: 1em 0;
 
 		li {
-			background: url(@portal_ctx@/html/icons/sites_admin.png) no-repeat 10px 3px;
+			background: url(@portal_ctx@/html/icons/sites_admin.png) no-repeat 10px 50%;
 			border: 1px solid #E8EFF4;
 			margin: 4px;
 			padding: 3px 10px 3px 30px;

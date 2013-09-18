@@ -120,8 +120,8 @@
 			<finder-column name="parentCalendarBookingId" />
 		</finder>
 		<finder name="C_S" return-type="Collection">
-			<finder-column name="calendarResourceId" />
-			<finder-column name="status" />
+			<finder-column name="calendarId" />
+			<finder-column name="status" arrayable-operator="OR" />
 		</finder>
 		<finder name="P_S" return-type="Collection">
 			<finder-column name="parentCalendarBookingId" />
@@ -191,6 +191,9 @@
 
 		<!-- Finder methods -->
 
+		<finder name="CalendarId" return-type="Collection">
+			<finder-column name="calendarId" />
+		</finder>
 		<finder name="C_NT_NTT" return-type="CalendarNotificationTemplate">
 			<finder-column name="calendarId" />
 			<finder-column name="notificationType" />

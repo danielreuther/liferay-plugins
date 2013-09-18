@@ -37,8 +37,6 @@
 
 				<%
 				LayoutTemplate layoutTemplate = (LayoutTemplate)plugin;
-
-				PluginSetting pluginSetting = PluginSettingLocalServiceUtil.getPluginSetting(company.getCompanyId(), layoutTemplate.getLayoutTemplateId(), Plugin.TYPE_LAYOUT_TEMPLATE);
 				%>
 
 				<tr>
@@ -49,6 +47,11 @@
 						<liferay-ui:message key="layout-template" />
 					</td>
 					<td class="plugin-actions">
+
+						<%
+						PluginSetting pluginSetting = PluginSettingLocalServiceUtil.getPluginSetting(company.getCompanyId(), layoutTemplate.getLayoutTemplateId(), Plugin.TYPE_LAYOUT_TEMPLATE);
+						%>
+
 						<c:choose>
 							<c:when test="<%= pluginSetting.isActive() %>">
 								<liferay-portlet:actionURL name="updatePluginSetting" var="deactivateURL">
@@ -78,14 +81,15 @@
 				Portlet portlet = (Portlet)plugin;
 
 				portlet = PortletLocalServiceUtil.getPortletById(themeDisplay.getCompanyId(), portlet.getPortletId());
-
-				String title = PortalUtil.getPortletTitle(portlet, application, locale);
-
-				List<String> indexerClasses = portlet.getIndexerClasses();
 				%>
 
 				<tr>
 					<td>
+
+						<%
+						String title = PortalUtil.getPortletTitle(portlet, application, locale);
+						%>
+
 						<%= title %>
 
 						<c:if test="<%= !title.equals(portlet.getDisplayName()) %>">
@@ -94,8 +98,36 @@
 					</td>
 					<td>
 						<liferay-ui:message key="portlet" />
+
+						<%
+						String controlPanelEntryCategory = portlet.getControlPanelEntryCategory();
+						%>
+
+						<c:if test="<%= Validator.isNotNull(controlPanelEntryCategory) %>">
+
+							<%
+							String tooltipTitle = StringPool.BLANK;
+
+							if (controlPanelEntryCategory.startsWith(PortletCategoryKeys.SITE_ADMINISTRATION)) {
+								tooltipTitle = "this-portlet-is-available-in-site-administration";
+							}
+							else if (controlPanelEntryCategory.equals(PortletCategoryKeys.MY)) {
+								tooltipTitle = "this-portlet-is-available-in-my-account";
+							}
+							else {
+								tooltipTitle = "this-portlet-is-available-in-the-control-panel";
+							}
+							%>
+
+							<i class="icon-wrench" data-title="<liferay-ui:message key="<%= tooltipTitle %>" />"></i>
+						</c:if>
 					</td>
 					<td class="plugin-actions">
+
+						<%
+						List<String> indexerClasses = portlet.getIndexerClasses();
+						%>
+
 						<c:if test="<%= !indexerClasses.isEmpty() %>">
 
 							<%
@@ -137,8 +169,6 @@
 
 				<%
 				Theme curTheme = (Theme)plugin;
-
-				PluginSetting pluginSetting = PluginSettingLocalServiceUtil.getPluginSetting(company.getCompanyId(), curTheme.getThemeId(), Plugin.TYPE_THEME);
 				%>
 
 				<tr>
@@ -149,6 +179,11 @@
 						<liferay-ui:message key="theme" />
 					</td>
 					<td class="plugin-actions">
+
+						<%
+						PluginSetting pluginSetting = PluginSettingLocalServiceUtil.getPluginSetting(company.getCompanyId(), curTheme.getThemeId(), Plugin.TYPE_THEME);
+						%>
+
 						<c:choose>
 							<c:when test="<%= pluginSetting.isActive() %>">
 								<liferay-portlet:actionURL name="updatePluginSetting" var="deactivateURL">

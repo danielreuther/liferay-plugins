@@ -18,6 +18,7 @@ import com.liferay.calendar.model.Calendar;
 import com.liferay.calendar.model.CalendarResource;
 import com.liferay.calendar.service.CalendarLocalServiceUtil;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.User;
 import com.liferay.portal.util.PortalUtil;
@@ -64,15 +65,9 @@ public class CalendarResourceImpl extends CalendarResourceBaseImpl {
 	}
 
 	@Override
-	public boolean isGlobal() {
-		long calendarResourceClassNameId = PortalUtil.getClassNameId(
-			CalendarResource.class);
-
-		if (calendarResourceClassNameId == getClassNameId()) {
-			return false;
-		}
-
-		return true;
+	public StagedModelType getStagedModelType() {
+		return new StagedModelType(
+			PortalUtil.getClassNameId(CalendarResource.class.getName()));
 	}
 
 	@Override

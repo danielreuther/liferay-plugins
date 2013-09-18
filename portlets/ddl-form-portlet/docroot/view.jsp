@@ -26,6 +26,10 @@ DDMTemplate ddmTemplate = null;
 try {
 	if (recordSetId > 0) {
 		recordSet = DDLRecordSetLocalServiceUtil.getRecordSet(recordSetId);
+
+		if (recordSet.getGroupId() != scopeGroupId) {
+			recordSet = null;
+		}
 	}
 
 	if (formDDMTemplateId > 0) {
@@ -57,7 +61,7 @@ try {
 					<c:when test="<%= (themeDisplay.isSignedIn() || multipleSubmissions) && permissionChecker.hasPermission(scopeGroupId, DDLRecordSet.class.getName(), recordSetId, ActionKeys.VIEW) %>">
 						<c:choose>
 							<c:when test="<%= !permissionChecker.hasPermission(scopeGroupId, DDLRecordSet.class.getName(), recordSetId, ActionKeys.ADD_RECORD) %>">
-								<div class="portlet-msg-info">
+								<div class="alert alert-info">
 									<liferay-ui:message key="you-do-not-have-the-required-permissions" />
 								</div>
 							</c:when>
@@ -88,14 +92,14 @@ try {
 								</aui:fieldset>
 							</c:when>
 							<c:otherwise>
-								<div class="portlet-msg-info">
+								<div class="alert alert-info">
 									<liferay-ui:message key="your-form-has-already-been-submitted" />
 								</div>
 							</c:otherwise>
 						</c:choose>
 					</c:when>
 					<c:otherwise>
-						<div class="portlet-msg-info">
+						<div class="alert alert-error">
 							<liferay-ui:message key="you-do-not-have-the-required-permissions" />
 						</div>
 					</c:otherwise>
@@ -110,7 +114,7 @@ try {
 
 			<br />
 
-			<div class="portlet-msg-info">
+			<div class="alert alert-info">
 				<liferay-ui:message key="select-an-existing-list-or-add-a-list-to-be-displayed-in-this-portlet" />
 			</div>
 		</c:otherwise>
@@ -121,7 +125,7 @@ try {
 catch (NoSuchRecordSetException nsrse) {
 %>
 
-	<div class="portlet-msg-error">
+	<div class="alert alert-error">
 		<%= LanguageUtil.get(pageContext, "the-selected-list-no-longer-exists") %>
 	</div>
 
@@ -137,7 +141,7 @@ boolean showEditTemplateIcon = (ddmTemplate != null) && (permissionChecker.hasOw
 
 <c:if test="<%= themeDisplay.isSignedIn() && (hasConfigurationPermission || showEditTemplateIcon || showAddListIcon) %>">
 	<div class="lfr-meta-actions icons-container">
-		<div class="icon-actions">
+		<div class="lfr-icon-actions">
 			<c:if test="<%= showAddTemplateIcon %>">
 				<liferay-portlet:renderURL portletName="<%= PortletKeys.DYNAMIC_DATA_MAPPING %>" var="addTemplateURL" windowState="<%= WindowState.MAXIMIZED.toString() %>">
 					<portlet:param name="struts_action" value="/dynamic_data_mapping/edit_template" />
@@ -152,7 +156,9 @@ boolean showEditTemplateIcon = (ddmTemplate != null) && (permissionChecker.hasOw
 				</liferay-portlet:renderURL>
 
 				<liferay-ui:icon
+					cssClass="lfr-icon-action lfr-icon-action-add"
 					image="add_template"
+					label="<%= true %>"
 					message="add-form"
 					url="<%= addTemplateURL %>"
 				/>
@@ -169,7 +175,9 @@ boolean showEditTemplateIcon = (ddmTemplate != null) && (permissionChecker.hasOw
 				</liferay-portlet:renderURL>
 
 				<liferay-ui:icon
+					cssClass="lfr-icon-action lfr-icon-action-edit-template"
 					image="../file_system/small/xml"
+					label="<%= true %>"
 					message="edit-form"
 					url="<%= editTemplateURL %>"
 				/>
@@ -177,8 +185,9 @@ boolean showEditTemplateIcon = (ddmTemplate != null) && (permissionChecker.hasOw
 
 			<c:if test="<%= hasConfigurationPermission %>">
 				<liferay-ui:icon
-					cssClass="portlet-configuration"
+					cssClass="lfr-icon-action lfr-icon-action-configuration"
 					image="configuration"
+					label="<%= true %>"
 					message="select-list"
 					method="get"
 					onClick="<%= portletDisplay.getURLConfigurationJS() %>"
@@ -191,10 +200,13 @@ boolean showEditTemplateIcon = (ddmTemplate != null) && (permissionChecker.hasOw
 					<portlet:param name="struts_action" value="/dynamic_data_lists/edit_record_set" />
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 					<portlet:param name="portletResource" value="<%= portletDisplay.getId() %>" />
+					<portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>" />
 				</liferay-portlet:renderURL>
 
 				<liferay-ui:icon
+					cssClass="lfr-icon-action lfr-icon-action-add"
 					image="add_article"
+					label="<%= true %>"
 					message="add-list"
 					url="<%= addListURL %>"
 				/>

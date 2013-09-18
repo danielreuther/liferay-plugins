@@ -56,6 +56,11 @@ public class FilterTracker
 			serviceReference.getProperty("urlPattern"));
 
 		if (Validator.isNull(urlPattern)) {
+			urlPattern = GetterUtil.getString(
+				serviceReference.getProperty("pattern"));
+		}
+
+		if (Validator.isNull(urlPattern)) {
 			return;
 		}
 

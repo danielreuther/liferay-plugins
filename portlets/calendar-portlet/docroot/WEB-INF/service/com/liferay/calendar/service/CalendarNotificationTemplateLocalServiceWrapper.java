@@ -374,6 +374,12 @@ public class CalendarNotificationTemplateLocalServiceWrapper
 	}
 
 	@Override
+	public void deleteCalendarNotificationTemplates(long calendarId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		_calendarNotificationTemplateLocalService.deleteCalendarNotificationTemplates(calendarId);
+	}
+
+	@Override
 	public com.liferay.calendar.model.CalendarNotificationTemplate fetchCalendarNotificationTemplate(
 		long calendarId,
 		com.liferay.calendar.notification.NotificationType notificationType,

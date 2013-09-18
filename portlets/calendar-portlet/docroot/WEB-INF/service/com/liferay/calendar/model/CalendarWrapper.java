@@ -862,6 +862,22 @@ public class CalendarWrapper implements Calendar, ModelWrapper<Calendar> {
 	}
 
 	@Override
+	public java.lang.String[] getAvailableLanguageIds() {
+		return _calendar.getAvailableLanguageIds();
+	}
+
+	@Override
+	public java.lang.String getDefaultLanguageId() {
+		return _calendar.getDefaultLanguageId();
+	}
+
+	@Override
+	public void prepareLocalizedFieldsForImport()
+		throws com.liferay.portal.LocaleException {
+		_calendar.prepareLocalizedFieldsForImport();
+	}
+
+	@Override
 	public void prepareLocalizedFieldsForImport(
 		java.util.Locale defaultImportLocale)
 		throws com.liferay.portal.LocaleException {
@@ -919,11 +935,6 @@ public class CalendarWrapper implements Calendar, ModelWrapper<Calendar> {
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _calendar.getCalendarResource();
-	}
-
-	@Override
-	public long getResourceGroupId() {
-		return _calendar.getResourceGroupId();
 	}
 
 	@Override

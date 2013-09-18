@@ -56,6 +56,11 @@ public class ServletTracker
 			serviceReference.getProperty("urlPattern"));
 
 		if (Validator.isNull(urlPattern)) {
+			urlPattern = GetterUtil.getString(
+				serviceReference.getProperty("alias"));
+		}
+
+		if (Validator.isNull(urlPattern)) {
 			return;
 		}
 

@@ -55,8 +55,8 @@ import javax.mail.BodyPart;
 import javax.mail.FetchProfile;
 import javax.mail.Flags;
 import javax.mail.Folder;
-import javax.mail.Message.RecipientType;
 import javax.mail.Message;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
@@ -985,7 +985,7 @@ public class IMAPAccessor {
 			}
 		}
 		else if (Validator.isNull(fileName)) {
-			String contentType = part.getContentType().toLowerCase();
+			String contentType = StringUtil.toLowerCase(part.getContentType());
 
 			if (contentType.startsWith(ContentTypes.TEXT_PLAIN)) {
 				bodyPlain.append(

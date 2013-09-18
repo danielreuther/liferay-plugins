@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -392,13 +393,11 @@ public class CalendarBookingFinderImpl
 			qPos.add(companyId);
 			qPos.add(groupIds);
 
-			if ((calendarIds != null) && (calendarIds.length > 0)) {
+			if (ArrayUtil.isNotEmpty(calendarIds)) {
 				qPos.add(calendarIds);
 			}
 
-			if ((calendarResourceIds != null) &&
-				(calendarResourceIds.length > 0)) {
-
+			if (ArrayUtil.isNotEmpty(calendarResourceIds)) {
 				qPos.add(calendarResourceIds);
 			}
 
@@ -420,7 +419,7 @@ public class CalendarBookingFinderImpl
 			qPos.add(startTime);
 			qPos.add(endTime);
 
-			if ((statuses != null) && (statuses.length > 0)) {
+			if (ArrayUtil.isNotEmpty(statuses)) {
 				qPos.add(statuses);
 			}
 
@@ -510,15 +509,16 @@ public class CalendarBookingFinderImpl
 			QueryPos qPos = QueryPos.getInstance(q);
 
 			qPos.add(companyId);
-			qPos.add(groupIds);
 
-			if ((calendarIds != null) && (calendarIds.length > 0)) {
+			if (ArrayUtil.isNotEmpty(groupIds)) {
+				qPos.add(groupIds);
+			}
+
+			if (ArrayUtil.isNotEmpty(calendarIds)) {
 				qPos.add(calendarIds);
 			}
 
-			if ((calendarResourceIds != null) &&
-				(calendarResourceIds.length > 0)) {
-
+			if (ArrayUtil.isNotEmpty(calendarResourceIds)) {
 				qPos.add(calendarResourceIds);
 			}
 
@@ -540,7 +540,7 @@ public class CalendarBookingFinderImpl
 			qPos.add(startTime);
 			qPos.add(endTime);
 
-			if ((statuses != null) && (statuses.length > 0)) {
+			if (ArrayUtil.isNotEmpty(statuses)) {
 				qPos.add(statuses);
 			}
 
@@ -556,7 +556,7 @@ public class CalendarBookingFinderImpl
 	}
 
 	protected String getCalendarIds(long[] calendarIds) {
-		if ((calendarIds == null) || (calendarIds.length == 0)) {
+		if (ArrayUtil.isEmpty(calendarIds)) {
 			return StringPool.BLANK;
 		}
 
@@ -578,9 +578,7 @@ public class CalendarBookingFinderImpl
 	}
 
 	protected String getCalendarResourceIds(long[] calendarResourceIds) {
-		if ((calendarResourceIds == null) ||
-			(calendarResourceIds.length == 0)) {
-
+		if (ArrayUtil.isEmpty(calendarResourceIds)) {
 			return StringPool.BLANK;
 		}
 
@@ -603,7 +601,7 @@ public class CalendarBookingFinderImpl
 	}
 
 	protected String getGroupIds(long[] groupIds) {
-		if (groupIds.length == 0) {
+		if (ArrayUtil.isEmpty(groupIds)) {
 			return StringPool.BLANK;
 		}
 
@@ -633,7 +631,7 @@ public class CalendarBookingFinderImpl
 	}
 
 	protected String getStatuses(int[] statuses) {
-		if ((statuses == null) || (statuses.length == 0)) {
+		if (ArrayUtil.isEmpty(statuses)) {
 			return StringPool.BLANK;
 		}
 

@@ -35,10 +35,10 @@ portletURL.setParameter("toolbarItem", toolbarItem);
 		<aui:nav-item href="<%= portletURL.toString() %>" label="manage" selected='<%= toolbarItem.equals("manage") %>' />
 
 		<%
-		portletURL.setParameter("toolbarItem", "install-apps-and-plugins");
+		portletURL.setParameter("toolbarItem", "install");
 		%>
 
-		<aui:nav-item href="<%= portletURL.toString() %>" label="install-apps-and-plugins" selected='<%= toolbarItem.equals("install-apps-and-plugins") %>' />
+		<aui:nav-item href="<%= portletURL.toString() %>" label="install" selected='<%= toolbarItem.equals("install") %>' />
 
 		<%
 		portletURL.setParameter("toolbarItem", toolbarItem);
@@ -48,10 +48,10 @@ portletURL.setParameter("toolbarItem", toolbarItem);
 </aui:nav-bar>
 
 <c:choose>
-	<c:when test='<%= toolbarItem.equals("install-apps-and-plugins") %>'>
-		<%@ include file="/app_manager/install_apps.jsp" %>
+	<c:when test='<%= toolbarItem.equals("install") %>'>
+		<%@ include file="/app_manager/install_apps.jspf" %>
 	</c:when>
 	<c:otherwise>
-		<%@ include file="/app_manager/manage.jsp" %>
+		<%@ include file="/app_manager/manage.jspf" %>
 	</c:otherwise>
 </c:choose>

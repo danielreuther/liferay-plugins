@@ -75,24 +75,24 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 		</c:if>
 
 		<c:if test="<%= showKBArticleCreateDateColumn %>">
-			<liferay-ui:search-container-column-text
+			<liferay-ui:search-container-column-date
 				cssClass="kb-column-no-wrap"
 				href="<%= rowURL %>"
 				name="create-date"
 				orderable="<%= true %>"
 				orderableProperty="createDate"
-				value='<%= dateFormatDate.format(assetEntry.getCreateDate()) + "<br />" + dateFormatTime.format(assetEntry.getCreateDate()) %>'
+				value="<%= assetEntry.getCreateDate() %>"
 			/>
 		</c:if>
 
 		<c:if test="<%= showKBArticleModifiedDateColumn %>">
-			<liferay-ui:search-container-column-text
+			<liferay-ui:search-container-column-date
 				cssClass="kb-column-no-wrap"
 				href="<%= rowURL %>"
 				name="modified-date"
 				orderable="<%= true %>"
 				orderableProperty="modifiedDate"
-				value='<%= dateFormatDate.format(assetEntry.getModifiedDate()) + "<br />" + dateFormatTime.format(assetEntry.getModifiedDate()) %>'
+				value="<%= assetEntry.getModifiedDate() %>"
 			/>
 		</c:if>
 
@@ -119,7 +119,7 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 	</liferay-ui:search-container-row>
 
 	<c:if test="<%= (assetCategoryId > 0) || Validator.isNotNull(assetTagName) %>">
-		<div class="portlet-msg-info">
+		<div class="alert alert-info">
 			<c:choose>
 				<c:when test="<%= assetCategoryId > 0 %>">
 

@@ -23,7 +23,9 @@
 <liferay-ui:success key="announcementDeleted" message="the-announcement-was-successfully-deleted" />
 <liferay-ui:success key="announcementUpdated" message="the-announcement-was-successfully-updated" />
 
-<c:if test="<%= permissionChecker.isGroupAdmin(layout.getGroupId()) || permissionChecker.isGroupOwner(layout.getGroupId()) %>">
+<div id="<portlet:namespace />errorMessage"></div>
+
+<c:if test="<%= (permissionChecker.isGroupAdmin(layout.getGroupId()) || permissionChecker.isGroupOwner(layout.getGroupId())) && (!group.isUser() || permissionChecker.isOmniadmin()) %>">
 	<div class="admin-actions">
 		<aui:button onClick='<%= renderResponse.getNamespace() + "addEntry()" %>' value="add-entry" />
 
@@ -31,55 +33,85 @@
 	</div>
 </c:if>
 
-<div class="unread-entries" id="unreadEntries">
+<div class="unread-entries-container" id="<portlet:namespace />unreadEntriesContainer"></div>
 
-	<%
-	LinkedHashMap<Long, long[]> scopes = AnnouncementsUtil.getAnnouncementScopes(user.getUserId());
+<div class="read-entries-container" id="<portlet:namespace />readEntriesContainer"></div>
 
-	scopes.put(new Long(0), new long[] {0});
+<aui:script use="aui-base">
+	Liferay.Announcements.init(
+		{
+			namespace: '<portlet:namespace />',
+			viewEntriesURL: '<portlet:renderURL windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>"><portlet:param name="mvcPath" value="/view_entries.jsp" /></portlet:renderURL>'
+		}
+	);
 
-	int flagValue = AnnouncementsFlagConstants.NOT_HIDDEN;
+	AUI().ready(
+		function() {
+			Liferay.Announcements.updateEntries(false, null);
+			Liferay.Announcements.updateEntries(true, null);
+		}
+	);
 
-	PortletURL portletURL = renderResponse.createRenderURL();
+	var announcementEntries = A.one('#p_p_id<portlet:namespace /> .portlet-content-container');
 
-	portletURL.setParameter("mvcPath", "/view.jsp");
+	announcementEntries.delegate(
+		'click',
+		function(event) {
+			Liferay.Announcements.toggleEntry(event);
+		},
+		'.toggle-entry'
+	);
 
-	SearchContainer searchContainer = new SearchContainer(renderRequest, null, null, "cur1", SearchContainer.DEFAULT_DELTA, portletURL, null, "there-are-no-unread-entries");
+	announcementEntries.delegate(
+		'click',
+		function(event) {
+			event.preventDefault();
 
-	List<AnnouncementsEntry> results = null;
-	int total = 0;
-	%>
+			if (confirm('<%= UnicodeLanguageUtil.get(pageContext,"are-you-sure-you-want-to-delete-the-selected-entry") %>')) {
+				var entry = event.currentTarget.ancestor('.entry');
 
-	<%@ include file="/entry_iterator.jspf" %>
-</div>
+				var entryId = entry.attr('data-entryId');
 
-<c:if test="<%= total > 0 %>">
-	<liferay-ui:search-paginator id="pageIteratorTop" searchContainer="<%= searchContainer %>" type="article" />
-</c:if>
+				var uri = '<liferay-portlet:actionURL name="deleteEntry"></liferay-portlet:actionURL>';
 
-<%
-flagValue = AnnouncementsFlagConstants.HIDDEN;
+				uri = Liferay.Util.addParams('<portlet:namespace />entryId=' + entryId, uri)
 
-searchContainer = new SearchContainer(renderRequest, null, null, "cur2", SearchContainer.DEFAULT_DELTA, portletURL, null, "there-are-no-read-entries");
+				A.io.request(
+					uri,
+					{
+						after: {
+							success: function(event, id, obj) {
+								var responseData = this.get('responseData');
 
-results = AnnouncementsEntryLocalServiceUtil.getEntries(user.getUserId(), scopes, portletName.equals(PortletKeys.ALERTS), flagValue, searchContainer.getStart(), searchContainer.getEnd());
-%>
+								if (!responseData.success) {
+									var message = A.one('#<portlet:namespace />errorMessage');
 
-<c:if test="<%= themeDisplay.isSignedIn() && !results.isEmpty() %>">
-	<div class="read-entries" id="readEntries">
-		<div class="header">
-			<span><%= LanguageUtil.get(pageContext, "read-entries") %></span>
-		</div>
+									if (message) {
+										message.html('<span class="alert alert-error">' + responseData.message + '</span>');
+									}
+								}
+								else {
+									Liferay.Announcements.transitionEntry('#<portlet:namespace />' + entryId);
 
-		<div class="content">
-			<%@ include file="/entry_iterator.jspf" %>
+									setTimeout(
+										function() {
+											Liferay.Announcements.updateEntries(false, null);
+											Liferay.Announcements.updateEntries(true, null);
+										},
+										200
+									);
+								}
 
-			<c:if test="<%= total > 0 %>">
-				<liferay-ui:search-paginator id="pageIteratorBottom" searchContainer="<%= searchContainer %>" type="article" />
-			</c:if>
-		</div>
-	</div>
-</c:if>
+							}
+						},
+						dataType: 'json',
+					}
+				);
+			}
+		},
+		'.delete-entry a'
+	);
+</aui:script>
 
 <aui:script>
 	function <portlet:namespace />addEntry() {
@@ -96,20 +128,25 @@ results = AnnouncementsEntryLocalServiceUtil.getEntries(user.getUserId(), scopes
 	}
 
 	function <portlet:namespace />handleEntry(entryId) {
-		var A = AUI();
-
-		var entry = A.one('#<portlet:namespace />' + entryId);
+		var entry = AUI().one('#<portlet:namespace />' + entryId);
 
 		if (entry) {
 			var container = entry.get('parentNode');
 
 			if (container) {
-				if (container.hasClass('unread-entries')) {
-					<portlet:namespace />markEntry(entryId);
-				}
-				else {
-					<portlet:namespace />unmarkEntry(entryId);
-				}
+				Liferay.Announcements.transitionEntry('#<portlet:namespace />' + entryId);
+
+				setTimeout(
+					function() {
+						if (container.hasClass('unread-entries')) {
+							<portlet:namespace />markEntry(entryId);
+						}
+						else {
+							<portlet:namespace />unmarkEntry(entryId);
+						}
+					},
+					200
+				);
 			}
 		}
 	}
@@ -126,10 +163,12 @@ results = AnnouncementsEntryLocalServiceUtil.getEntries(user.getUserId(), scopes
 			{
 				entryId : entryId,
 				value: <%= AnnouncementsFlagConstants.HIDDEN %>
+			},
+			function() {
+				Liferay.Announcements.updateEntries(false, null);
+				Liferay.Announcements.updateEntries(true, null);
 			}
 		);
-
-		Liferay.Portlet.refresh('#p_p_id<portlet:namespace />');
 	}
 
 	function <portlet:namespace />openWindow(url, title, modal, width) {
@@ -137,13 +176,16 @@ results = AnnouncementsEntryLocalServiceUtil.getEntries(user.getUserId(), scopes
 			{
 				cache: false,
 				dialog: {
-					align: Liferay.Util.Window.ALIGN_CENTER,
-					modal: modal,
-					on: {
-						close: function() {
-							Liferay.Portlet.refresh('#p_p_id<portlet:namespace />');
+					after: {
+						visibleChange: function(event) {
+							if (!event.currentTarget.get('visible')) {
+								Liferay.Announcements.updateEntries(false, null);
+								Liferay.Announcements.updateEntries(true, null);
+							}
 						}
 					},
+					align: Liferay.Util.Window.ALIGN_CENTER,
+					modal: modal,
 					width: width
 				},
 				id: '<portlet:namespace />Dialog',
@@ -165,11 +207,13 @@ results = AnnouncementsEntryLocalServiceUtil.getEntries(user.getUserId(), scopes
 					'/announcementsflag/delete-flag',
 					{
 						flagId: response.flagId
+					},
+					function() {
+						Liferay.Announcements.updateEntries(false, null);
+						Liferay.Announcements.updateEntries(true, null);
 					}
 				);
 			}
 		);
-
-		Liferay.Portlet.refresh('#p_p_id<portlet:namespace />');
 	}
 </aui:script>

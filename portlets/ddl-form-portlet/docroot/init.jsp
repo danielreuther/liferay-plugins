@@ -30,7 +30,6 @@ page import="com.liferay.ddlform.util.DDLFormUtil" %><%@
 page import="com.liferay.portal.kernel.dao.search.SearchContainer" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
-page import="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil" %><%@
 page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
@@ -59,12 +58,9 @@ page import="com.liferay.portlet.dynamicdatamapping.service.DDMTemplateLocalServ
 page import="com.liferay.portlet.dynamicdatamapping.util.DDMDisplay" %><%@
 page import="com.liferay.portlet.dynamicdatamapping.util.DDMDisplayRegistryUtil" %>
 
-<%@ page import="java.text.Format" %>
-
 <%@ page import="java.util.List" %>
 
 <%@ page import="javax.portlet.ActionRequest" %><%@
-page import="javax.portlet.PortletPreferences" %><%@
 page import="javax.portlet.WindowState" %>
 
 <portlet:defineObjects />
@@ -74,17 +70,11 @@ page import="javax.portlet.WindowState" %>
 <%
 String currentURL = PortalUtil.getCurrentURL(request);
 
-PortletPreferences preferences = renderRequest.getPreferences();
+long recordSetId = GetterUtil.getLong(portletPreferences.getValue("recordSetId", null));
 
-String portletResource = ParamUtil.getString(request, "portletResource");
+long formDDMTemplateId = GetterUtil.getLong(portletPreferences.getValue("formDDMTemplateId", null));
 
-long recordSetId = GetterUtil.getLong(preferences.getValue("recordSetId", null));
-
-long formDDMTemplateId = GetterUtil.getLong(preferences.getValue("formDDMTemplateId", null));
-
-boolean multipleSubmissions = GetterUtil.getBoolean(preferences.getValue("multipleSubmissions", null));
+boolean multipleSubmissions = GetterUtil.getBoolean(portletPreferences.getValue("multipleSubmissions", null));
 
 DDMDisplay ddmDisplay = DDMDisplayRegistryUtil.getDDMDisplay(PortletKeys.DYNAMIC_DATA_LISTS);
-
-Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
 %>
